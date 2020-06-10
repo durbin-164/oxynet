@@ -37,6 +37,7 @@ jobs:
     - name: Test with pytest
       run: |
         pytest --cov=oxynet tests/ --cov-report=xml 
+        ls -l
 
 
   sonarcloud:
