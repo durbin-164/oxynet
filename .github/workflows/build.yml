@@ -2,9 +2,9 @@ name: Python build
 
 on:
   push:
-    branches: [master]
+    branches: [master, dev]
   pull_request:
-    branches: [ dev ]
+    branches: [ dev, '**' ]
 
 jobs:
   build:
