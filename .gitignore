@@ -2,3 +2,8 @@ oxyvenv/
 .vscode/
 __pycache__/
 .pytest_cache/
+htmlcov/
+coverage.xml
+.coverage
+*.py,cover
+
