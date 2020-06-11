@@ -1,6 +1,6 @@
 # oxynet
 
-[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=com.github.breed.judge:judge-rule-engine&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.lapots.breed.judge:judge-rule-engine)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=com.lapots.breed.judge:judge-rule-engine&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.lapots.breed.judge:judge-rule-engine)
 
 [![Quality Gate](https://sonarcloud.io/api/badges/gate?key=com.github.noraui:noraui)](https://sonarcloud.io/dashboard/index/com.github.noraui:noraui)
 [![SonarCloud Coverage](https://sonarcloud.io/api/badges/measure?key=com.github.noraui%3Anoraui&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=com.github.noraui:noraui)
@@ -9,3 +9,5 @@
 
 
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=oxynet&metric=bugs)](https://sonarcloud.io/dashboard?id=oxynet)
+
+[![Quality Gate](https://sonarcloud.io/api/badges/gate?key=durbin-164_oxynet)](https://sonarcloud.io/dashboard/index/durbin-164_oxynet)
