@@ -10,4 +10,4 @@
 
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=oxynet&metric=bugs)](https://sonarcloud.io/dashboard?id=oxynet)
 
-[![Quality Gate](https://sonarcloud.io/api/badges/gate?key=durbin-164_oxynet)](https://sonarcloud.io/dashboard/index/durbin-164_oxynet)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=durbin-164_oxynet&metric=alert_status)](https://sonarcloud.io/dashboard?id=durbin-164_oxynet)
