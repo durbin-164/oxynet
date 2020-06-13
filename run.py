@@ -5,7 +5,7 @@ REPORT_DIR = "reports/"
 
 def _run_coverage_pytest(run_type, out_dir):
     type_str = "--cov-report="+ run_type + ":" + out_dir
-    exit(call(["pytest", "--cov=./oxynet", "tests/", type_str, "--doctest-modules"]))
+    exit(call(["pytest", "--cov=./", "tests/", type_str, "--doctest-modules"]))
 
 
 def __setup__():
