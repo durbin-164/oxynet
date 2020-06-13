@@ -1,4 +1,5 @@
 import setuptools
+import versioneer
 
 with open("README.md", 'r') as rd:
     long_description = rd.read()
@@ -9,7 +10,8 @@ with open('requirements.txt', 'r') as rq:
 
 setuptools.setup(
     name = 'oxynet',
-    version = '0.0.1',
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     author = "Md. Masud Rana",
     author_email = "masud.cseian@gmail.com",
     description = "A deep learning mini framwork",
