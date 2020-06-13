@@ -11,3 +11,6 @@ def mul(a,b):
 
 def div(a,b):
     return a/b
+
+def pow(a,b):
+    return np.pow(a,b)
