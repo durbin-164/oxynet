@@ -1,0 +1,7 @@
+include README.md
+include LICENSE
+include requirements.txt
+graft oxynet
+recursive-exclude * *.py[co]
+include versioneer.py
+include oxynet/_version.py

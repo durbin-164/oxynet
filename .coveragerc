@@ -1,0 +1,6 @@
+[run]
+source = .
+omit = *version.py , *_init__.py
+
+[report]
+omit = *version.py ,*_init__.py
