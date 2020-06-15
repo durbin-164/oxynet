@@ -24,7 +24,7 @@ if __name__ == "__main__":
         __setup__()
 
     elif script_type == 'test':
-        exit(call('pytest', 'tests/'))
+        exit(call(['pytest', '--cov=./oxynet' ,'tests/']))
 
     elif script_type == 'coverage/xml':
         out_dir = args.out if args.out else REPORT_DIR + 'coverage/coverage.xml'
