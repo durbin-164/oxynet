@@ -6,4 +6,5 @@ htmlcov/
 coverage.xml
 .coverage
 *.py,cover
-
+html/
+reports/
