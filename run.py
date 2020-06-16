@@ -29,3 +29,7 @@ if __name__ == "__main__":
     elif script_type == 'coverage/xml':
         out_dir = args.out if args.out else REPORT_DIR + 'coverage/coverage.xml'
         _run_coverage_pytest('xml', out_dir)
+
+    elif script_type == 'coverage' or script_type == 'coverage/html':
+        out_dir = args.out if args.out else REPORT_DIR + "coverage/html"
+        _run_coverage_pytest("html", out_dir)
