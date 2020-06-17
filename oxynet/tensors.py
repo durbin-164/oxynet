@@ -44,3 +44,11 @@ class TensorBase:
     @property
     def shape(self):
         return self.value.shape
+
+
+
+class Tensor(TensorBase):
+    name = 'Tensor'
+
+class TensorConstant(TensorBase):
+    name = 'Tensor Constant'
