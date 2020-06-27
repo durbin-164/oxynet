@@ -50,28 +50,14 @@ def _add(t1: tensor.Tensor, t2: tensor.Tensor) ->tensor.Tensor:
     if t1.requires_grad:
         def grad_fn1(grad: np.ndarray) -> np.ndarray:
 
-            ndims_added = grad.ndim - t1.data.ndim
-
-            for _ in range(ndims_added):
-                grad = grad.sum(axis = 0)
-
-            for i, dim in enumerate(t1.data.shape):
-                if dim == 1:
-                    grad = grad.sum(axis = i, keepdims = True)
+            grad = __handle_array_broadcasting(grad, t1.data)
 
             return grad
         depends_on.append(tensor.Dependency(t1, grad_fn1))
 
     if t2.requires_grad:
         def grad_fn2(grad: np.ndarray) -> np.ndarray:
-            ndims_added = grad.ndim - t2.data.ndim
-
-            for _ in range(ndims_added):
-                grad = grad.sum(axis = 0)
-
-            for i, dim in enumerate(t2.data.shape):
-                if dim == 1:
-                    grad = grad.sum(axis = i, keepdims = True)
+            grad = __handle_array_broadcasting(grad, t2.data)
                     
             return grad
 
@@ -105,14 +91,7 @@ def _mul(t1: tensor.Tensor, t2: tensor.Tensor) ->tensor.Tensor:
 
             grad = grad * t2.data
 
-            ndims_added = grad.ndim - t1.data.ndim
-
-            for _ in range(ndims_added):
-                grad = grad.sum(axis = 0)
-
-            for i, dim in enumerate(t1.data.shape):
-                if dim == 1:
-                    grad = grad.sum(axis = i, keepdims = True)
+            grad = __handle_array_broadcasting(grad, t1.data)
 
             return grad
         depends_on.append(tensor.Dependency(t1, grad_fn1))
@@ -122,14 +101,7 @@ def _mul(t1: tensor.Tensor, t2: tensor.Tensor) ->tensor.Tensor:
 
             grad = grad * t1.data
 
-            ndims_added = grad.ndim - t2.data.ndim
-
-            for _ in range(ndims_added):
-                grad = grad.sum(axis = 0)
-
-            for i, dim in enumerate(t2.data.shape):
-                if dim == 1:
-                    grad = grad.sum(axis = i, keepdims = True)
+            grad = __handle_array_broadcasting(grad, t2.data)
                     
             return grad
 
@@ -205,3 +177,16 @@ def _slice(t:tensor.Tensor, idxs) -> tensor.Tensor:
                   requires_grad,
                   depends_on)
 
+
+
+def __handle_array_broadcasting(grad, data):
+    ndims_added = grad.ndim - data.ndim
+
+    for _ in range(ndims_added):
+        grad = grad.sum(axis = 0)
+
+    for i, dim in enumerate(data.shape):
+        if dim == 1:
+            grad = grad.sum(axis = i, keepdims = True)
+
+    return grad
