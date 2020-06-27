@@ -22,7 +22,7 @@ class Model(Module):
 
 
 model = Model()
-optimizer = SGD(model.parameters, lr = 0.001)
+optimizer = SGD(lr = 0.001)
 batch_size = 32
 
 for epoch in range(100):
@@ -47,7 +47,7 @@ for epoch in range(100):
 
         epoch_loss += loss.data  
 
-        optimizer.step()
+        optimizer.step(model)
 
     print(epoch, epoch_loss)
 

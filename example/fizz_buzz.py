@@ -49,7 +49,7 @@ class FizzBuzzModel(Module):
 
 batch_size = 32
 model = FizzBuzzModel()
-optimizer = SGD(model.parameters, lr=0.001)
+optimizer = SGD( lr=0.001)
 
 starts = np.arange(0, x_train.shape[0], batch_size)
 for epoch in range(500):
@@ -71,7 +71,7 @@ for epoch in range(500):
         loss.backward()
         epoch_loss += loss.data
 
-        optimizer.step()
+        optimizer.step(model)
 
     print(epoch, epoch_loss)
 
