@@ -5,10 +5,9 @@ from typing import Callable, Iterator
 
 
 class SGD:
-    def __init__(self,parameters: Callable , lr: float = 0.001) -> None:
+    def __init__(self, lr: float = 0.001) -> None:
         self.lr = lr 
-        self.parameters = parameters
 
-    def step(self) -> None:
-        for parameter in self.parameters():
-            parameter -= parameter.grad * self.lr
+    def step(self, model: Module) -> None:
+        for parameter in model.parameters():
+            parameter -= parameter.grad * self.lr #type:ignore
