@@ -164,7 +164,7 @@ def _slice(t:tensor.Tensor, idxs) -> tensor.Tensor:
 
     if requires_grad:
         def grad_fn(grad: np.ndarray) -> np.ndarray:
-            bigger_grad = np.zeros_like(data)
+            bigger_grad = np.zeros_like(t.data)
             bigger_grad[idxs] = grad
 
             return bigger_grad
