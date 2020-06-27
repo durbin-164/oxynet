@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, NamedTuple, Callable, Optional, Union
+from typing import List, NamedTuple, Callable, Optional, Union, Tuple
 
 import numpy as np 
 import oxynet.tensor_ops as ops
@@ -35,7 +35,6 @@ class Tensor:
         self._data = ensure_array(data)
         self.requires_grad = requires_grad
         self.depends_on = depends_on or []
-        self.shape = self.data.shape
         self.grad: Optional['Tensor'] = None
 
         if self.requires_grad:
@@ -51,12 +50,15 @@ class Tensor:
         # Setting the data manually means we invalidate the gradient.
         self.grad = None
 
+    @property
+    def shape(self) -> Tuple:
+        return self._data.shape
         
     def zero_grad(self) -> None:
         self.grad = Tensor(np.zeros_like(self.data, dtype=np.float64))
 
     def __repr__(self) -> str:
-        return f"Tensor ({self.data}, requires_grad=({self.requires_grad})"  
+        return f"Tensor ({self.data}, requires_grad=({self.requires_grad}))"  
 
     def __add__(self, other) -> 'Tensor':
         """gets called if I do t + other"""
