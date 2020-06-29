@@ -38,7 +38,7 @@ class FizzBuzzModel(Module):
         self.w2 = Parameter(num_hidden, 4)
         self.b2 = Parameter(4)
 
-    def predict(self, inputs: Tensor) -> Tensor:
+    def forward(self, inputs: Tensor) -> Tensor:
         # inputs will be (batch_size, 10)
         x1 = inputs @ self.w1 + self.b1  # (batch_size, num_hidden)
         x2 = tanh(x1)                    # (batch_size, num_hidden)
@@ -63,7 +63,7 @@ for epoch in range(500):
 
         inputs = x_train[start:end]
 
-        predicted = model.predict(inputs)
+        predicted = model(inputs)
         actual = y_train[start:end]
         errors = predicted - actual
         loss = (errors * errors).sum()
@@ -78,7 +78,7 @@ for epoch in range(500):
 num_correct = 0
 for x in range(1, 101):
     inputs = Tensor([binary_encode(x)])
-    predicted = model.predict(inputs)[0]
+    predicted = model(inputs)[0]
     predicted_idx = np.argmax(predicted.data)
     actual_idx = np.argmax(fizz_buzz_encode(x))
     labels = [str(x), "fizz", "buzz", "fizzbuzz"]
