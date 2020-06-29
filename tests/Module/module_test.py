@@ -11,6 +11,13 @@ class TestModule(unittest.TestCase):
         assert model.a.shape == (3, 4)
         assert model.b.data.shape ==()
 
+    def test_simple_call(self):
+        model = ModuleTestHelp()
+
+        model.zero_grad()
+        
+        self.assertRaises(NotImplementedError, model)
+
 
 
 class ModuleTestHelp(Module):
