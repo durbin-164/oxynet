@@ -48,7 +48,7 @@ class Tensor:
     def data(self, new_data: np.ndarray) -> None:
         self._data = new_data
         # Setting the data manually means we invalidate the gradient.
-        self.grad = None
+        # self.grad = None
 
     @property
     def shape(self) -> Tuple:

@@ -8,3 +8,5 @@ class TestParameter(unittest.TestCase):
         assert p.shape == (3,4)
 
         assert type(repr(p)) == str
+
+        assert p.requires_grad == True

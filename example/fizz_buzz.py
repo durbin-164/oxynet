@@ -10,7 +10,7 @@ from typing import List
 import numpy as np
 
 from oxynet import Tensor
-from oxynet.modules import Parameter,tanh, Module
+from oxynet.modules import Parameter,tanh, Module, Linear
 from oxynet.optims import SGD
 
 def binary_encode(x: int) -> List[int]:
@@ -31,19 +31,25 @@ y_train = Tensor([fizz_buzz_encode(x) for x in range(101, 1024)])
 
 class FizzBuzzModel(Module):
     def __init__(self, num_hidden: int = 50) -> None:
-        self.w1 = Parameter(10, num_hidden)
-        self.b1 = Parameter(num_hidden)
+        # self.w1 = Parameter(10, num_hidden)
+        # self.b1 = Parameter(num_hidden)
 
-        self.w2 = Parameter(num_hidden, 4)
-        self.b2 = Parameter(4)
+        # self.w2 = Parameter(num_hidden, 4)
+        # self.b2 = Parameter(4)
+
+        self.fc1 = Linear(10, num_hidden)
+        self.fc2 = Linear(num_hidden,4)
 
     def forward(self, inputs: Tensor) -> Tensor:
         # inputs will be (batch_size, 10)
-        x1 = inputs @ self.w1 + self.b1  # (batch_size, num_hidden)
-        x2 = tanh(x1)                    # (batch_size, num_hidden)
-        x3 = x2 @ self.w2 + self.b2      # (batch_size, 4)
+        # x1 = inputs @ self.w1 + self.b1  # (batch_size, num_hidden)
+        # x2 = tanh(x1)                    # (batch_size, num_hidden)
+        # x3 = x2 @ self.w2 + self.b2      # (batch_size, 4)
 
-        return x3
+        x = self.fc1(inputs)
+        x = tanh(x)
+        x = self.fc2(x)
+        return x
 
 
 batch_size = 32
