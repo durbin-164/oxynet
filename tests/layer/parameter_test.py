@@ -6,3 +6,5 @@ class TestParameter(unittest.TestCase):
         p = Parameter(3,4)
 
         assert p.shape == (3,4)
+
+        assert type(repr(p)) == str
