@@ -4,7 +4,7 @@ import inspect
 
 class Module:
     def parameters(self) -> Iterator[Parameter]:
-        for name, value in inspect.getmembers(self):
+        for _, value in inspect.getmembers(self):
             if isinstance(value, Parameter):
                 yield value
             if isinstance(value, Module):
