@@ -1,5 +1,5 @@
 from oxynet import Tensor
-from oxynet.layer import tanh 
+from oxynet.modules import tanh 
 import numpy as np 
 import unittest 
 

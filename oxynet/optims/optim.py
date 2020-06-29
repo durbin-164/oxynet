@@ -1,5 +1,4 @@
-from oxynet.model import Module 
-from oxynet.layer import Parameter
+from oxynet.modules import Module ,Parameter
 from typing import Callable, Iterator
 
 

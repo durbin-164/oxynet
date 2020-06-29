@@ -10,9 +10,8 @@ from typing import List
 import numpy as np
 
 from oxynet import Tensor
-from oxynet.layer import Parameter,tanh
-from oxynet.optim import SGD
-from oxynet.model import Module
+from oxynet.modules import Parameter,tanh, Module
+from oxynet.optims import SGD
 
 def binary_encode(x: int) -> List[int]:
     return [x >> i & 1 for i in range(10)]

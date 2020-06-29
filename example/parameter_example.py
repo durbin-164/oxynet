@@ -1,5 +1,5 @@
 import parent_package
-from oxynet.layer import Parameter
+from oxynet.modules import Parameter
 
 a = Parameter(3, 5)
 

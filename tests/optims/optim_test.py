@@ -1,7 +1,6 @@
 import unittest 
-from oxynet.model import Module 
-from oxynet.layer import Parameter
-from oxynet.optim import SGD
+from oxynet.modules import Module , Parameter
+from oxynet.optims import SGD
 
 class TestSGD(unittest.TestCase):
     def test_simple_SGD(self):

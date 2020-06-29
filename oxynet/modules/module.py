@@ -1,4 +1,4 @@
-from oxynet.layer import Parameter 
+from oxynet.modules import Parameter
 from typing import Iterator
 import inspect
 
