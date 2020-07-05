@@ -28,7 +28,7 @@ class Conv2d(Module):
             for o , kernel in enumerate(self.kernels):
                 for i in range(h-self.kernel_size):
                     for j in range( w-self.kernel_size):
-                        output[b,i, j,o] = (image[i:self.kernel_size, j:kernel_size] * kernel).sum()
+                        output[b,i, j,o] = (image[i:self.kernel_size, j:self.kernel_size] * kernel).sum()
 
 
         return output
