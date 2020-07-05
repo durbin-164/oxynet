@@ -46,10 +46,10 @@ class FizzBuzzModel(Module):
         # x2 = tanh(x1)                    # (batch_size, num_hidden)
         # x3 = x2 @ self.w2 + self.b2      # (batch_size, 4)
 
-        x = self.fc1(inputs)
-        x = tanh(x)
-        x = self.fc2(x)
-        return x
+        x1 = self.fc1(inputs)
+        x2 = tanh(x1)
+        x3 = self.fc2(x2)
+        return x3
 
 
 batch_size = 32
