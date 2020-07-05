@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List
+from typing import List, Tuple
 import oxynet.tensor as tensor
 import numpy as np
 
@@ -190,3 +190,40 @@ def __handle_array_broadcasting(grad, data):
             grad = grad.sum(axis = i, keepdims = True)
 
     return grad
+
+
+def _tensor_reshape(t: tensor.Tensor, shape: Tuple) -> tensor.Tensor:
+    data = t.data.reshape(shape)
+
+    requires_grad = t.requires_grad 
+
+    depends_on = []
+
+    if requires_grad:
+        def grad_fn(grad: np.ndarray) -> np.ndarray:
+            if grad.shape == t.data.shape:
+                return grad
+            return grad * np.ones_like(t.data)
+
+        depends_on = [tensor.Dependency(t, grad_fn)]
+
+    return tensor.Tensor(data,
+                        requires_grad,
+                        depends_on)
+
+
+def _pow(t: tensor.Tensor, to_power:int) -> tensor.Tensor:
+
+    data = np.power(t.data, to_power)
+    requires_grad = t.requires_grad 
+    depends_on = []
+
+    if requires_grad:
+        def grad_fn(grad: np.ndarray) -> np.ndarray:
+            return grad * to_power * np.power(t.data, to_power-1) 
+
+        depends_on = [tensor.Dependency(t, grad_fn)]
+
+    return tensor.Tensor(data, 
+                         requires_grad,
+                         depends_on)

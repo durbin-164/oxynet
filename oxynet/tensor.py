@@ -104,6 +104,13 @@ class Tensor:
 
     def __getitem__(self, idxs) -> 'Tensor':
         return ops._slice(self, idxs)
+    
+    def __pow__(self, to_power) -> "Tensor":
+        return ops._pow(self, to_power)
+
+    def __ipow__(self, to_power:int) -> "Tensor":
+        self.data = self.data ** to_power
+        return self
         
 
     def backward(self, grad: 'Tensor' = None) ->None:
@@ -123,3 +130,7 @@ class Tensor:
 
     def sum(self) -> 'Tensor':
         return ops._tensor_sum(self)
+
+    
+    def reshape(self, shape:Tuple) -> "Tensor":
+        return ops._tensor_reshape(self, shape)
