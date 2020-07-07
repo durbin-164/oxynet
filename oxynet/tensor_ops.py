@@ -227,3 +227,5 @@ def _pow(t: tensor.Tensor, to_power:int) -> tensor.Tensor:
     return tensor.Tensor(data, 
                          requires_grad,
                          depends_on)
+
+
