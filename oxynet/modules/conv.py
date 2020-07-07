@@ -1,6 +1,7 @@
 from typing import Tuple
 from oxynet import Tensor 
 from oxynet.modules import Module , Parameter
+import numpy as np
 
 class Conv2d(Module):
     def __init__(self, 
@@ -15,15 +16,17 @@ class Conv2d(Module):
         self.kernel_size = kernel_size
         self.stride = stride
         self.kernels = []
+        
+        self.initialize_weights()
 
     def initialize_weights(self)-> None:
-        for i in range(self.out_channels):
+        for _ in range(self.out_channels):
             self.kernels.append( Parameter(self.kernel_size, self.kernel_size,self.in_channels))
 
     def forward(self, input : Tensor)-> Tensor:
-        b, h,w, c = input.shape
+        b, h,w, _ = input.shape
         temp = self.kernel_size//2
-        output = Parameter(b, h-temp*2,w-temp*2,self.out_channels)
+        output = Tensor(np.zeros((b, h-temp*2,w-temp*2,self.out_channels)))
         for b, image in enumerate(input):
             for o , kernel in enumerate(self.kernels):
                 for i in range(h-self.kernel_size):
@@ -31,7 +34,7 @@ class Conv2d(Module):
                         output[b,i, j,o] = (image[i:self.kernel_size, j:self.kernel_size] * kernel).sum()
 
 
-        return output
+        return Tensor(output)
 
 
 
