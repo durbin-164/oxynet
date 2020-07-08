@@ -9,9 +9,9 @@ class TestTensorReshape(unittest.TestCase):
         t1 = Tensor(data, requires_grad=True)
         print(t1.shape)
 
-        t2 = t1.reshape((3,100))
+        t2 = t1.reshape(3, 100)
 
         assert t2.shape == (3,100)
-        t2.backward(Tensor(1))
+        t2.backward(t2)
 
         assert t1.grad.shape == (3,10,10)

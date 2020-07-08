@@ -179,28 +179,6 @@ def slice(t:onet.Tensor, idxs) -> onet.Tensor:
                   depends_on)
 
 
-
-
-def tensor_reshape(t: onet.Tensor, shape: Tuple) -> onet.Tensor:
-    data = t.data.reshape(shape)
-
-    requires_grad = t.requires_grad 
-
-    depends_on = []
-
-    if requires_grad:
-        def grad_fn(grad: np.ndarray) -> np.ndarray:
-            if grad.shape == t.data.shape:
-                return grad
-            return grad * np.ones_like(t.data)
-
-        depends_on = [onet.Dependency(t, grad_fn)]
-
-    return onet.Tensor(data,
-                        requires_grad,
-                        depends_on)
-
-
 def pow(t: onet.Tensor, to_power:int) -> onet.Tensor:
 
     data = np.power(t.data, to_power)

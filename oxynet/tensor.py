@@ -133,8 +133,8 @@ class Tensor:
         return ops.tensor_sum(self)
 
     
-    def reshape(self, shape:Tuple) -> "Tensor":
-        return ops.tensor_reshape(self, shape)
+    def reshape(self, *shape:Tuple) -> "Tensor":
+        return ops.reshape(self, shape)
 
     def transpose(self, *indices:Tuple)-> "Tensor":
         return ops.transpose(self, indices)
