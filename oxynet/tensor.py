@@ -2,7 +2,8 @@ from __future__ import annotations
 from typing import List, NamedTuple, Callable, Optional, Union, Tuple
 
 import numpy as np 
-import oxynet.tensor_ops as ops
+# import oxynet.tensor_ops as ops
+import oxynet.ops as ops
 
 class Dependency(NamedTuple):
     tensor: 'Tensor'
@@ -62,26 +63,26 @@ class Tensor:
 
     def __add__(self, other) -> 'Tensor':
         """gets called if I do t + other"""
-        return ops._add(self, ensure_tensor(other))
+        return ops.add(self, ensure_tensor(other))
     
     def __radd__(self, other) -> 'Tensor':
         """gets called if I do other + t"""
-        return ops._add(ensure_tensor(other), self)
+        return ops.add(ensure_tensor(other), self)
     
     def __mul__(self, other) -> 'Tensor':
-        return ops._mul(self, ensure_tensor(other))
+        return ops.mul(self, ensure_tensor(other))
 
     def __rmul__(self, other) -> 'Tensor':
-        return ops._mul(ensure_tensor(other), self)
+        return ops.mul(ensure_tensor(other), self)
         
     def __neg__(self) -> 'Tensor':
-        return ops._neg(self)
+        return ops.neg(self)
     
     def __sub__(self, other) -> 'Tensor':
-        return ops._sub(self, ensure_tensor(other))
+        return ops.sub(self, ensure_tensor(other))
         
     def __rsub__(self, other) -> 'Tensor':
-        return ops._sub( ensure_tensor(other), self)
+        return ops.sub( ensure_tensor(other), self)
 
     
     def __iadd__(self, other) -> 'Tensor':
@@ -100,13 +101,13 @@ class Tensor:
         return self
 
     def __matmul__(self, other) -> 'Tensor':
-        return ops._matmul(self, other)
+        return ops.matmul(self, other)
 
     def __getitem__(self, idxs) -> 'Tensor':
-        return ops._slice(self, idxs)
+        return ops.slice(self, idxs)
     
     def __pow__(self, to_power) -> "Tensor":
-        return ops._pow(self, to_power)
+        return ops.pow(self, to_power)
 
     def __ipow__(self, to_power:int) -> "Tensor":
         self.data = self.data ** to_power
@@ -129,8 +130,11 @@ class Tensor:
             dependency.tensor.backward(Tensor(backward_grad)) 
 
     def sum(self) -> 'Tensor':
-        return ops._tensor_sum(self)
+        return ops.tensor_sum(self)
 
     
     def reshape(self, shape:Tuple) -> "Tensor":
-        return ops._tensor_reshape(self, shape)
+        return ops.tensor_reshape(self, shape)
+
+    def transpose(self, *indices:Tuple)-> "Tensor":
+        return ops.transpose(self, indices)
