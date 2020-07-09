@@ -3,6 +3,7 @@ from typing import Tuple
 import oxynet as onet
 import numpy as np 
 
+kernel_size_error_message = 'Kernel size must be a list of shape [kernel_h, kernel_w]'
 
 def img2col(inputs: onet.Tensor, ksize, stride=1, pad = 0):
     # data shape = (N*out_h*out_w, C*k_h*k_w)
@@ -48,7 +49,7 @@ def tensor_to_matrix(inputs, ksize, stride=1, pad=0):
         raise ValueError('The shape of input tensor must be [inputs_nums, channel, height, width]')
     
     if len(ksize) != 2:
-        raise ValueError('Kernel size must be a list of shape [kernel_h, kernel_w]')
+        raise ValueError(kernel_size_error_message)
 
     if not isinstance(ksize, (tuple, list)):
         ksize = [ksize]
@@ -94,11 +95,8 @@ def matrix_to_tensor(inputs, desire_shape ,ksize, stride=1, pad=0):
     Returns:
         4D tensor of shape [batch_size, channel, height, width]
     """
-    # if len(inputs.shape) != 4:
-    #     raise ValueError('The shape of input tensor must be [inputs_nums, channel, height, width]')
-
     if len(ksize) != 2:
-        raise ValueError('Kernel size must be a list of shape [kernel_h, kernel_w]')
+        raise ValueError(kernel_size_error_message)
     
     if not isinstance(ksize, (tuple, list)):
         ksize = [ksize]
@@ -140,7 +138,7 @@ def get_conv_output_shape(inputs_h, inputs_w, ksize, stride=1, pad=0):
     """
 
     if len(ksize) != 2:
-        raise ValueError('Kernel size must be a list of shape [kernel_h, kernel_w]')
+        raise ValueError(kernel_size_error_message)
 
     if not isinstance(inputs_h, int):
         inputs_h = int(inputs_h)

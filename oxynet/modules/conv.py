@@ -26,8 +26,8 @@ class Conv2d(Module):
         self.initialize_weights()
 
     def initialize_weights(self)-> None:
-        k_h, k_W = self.kernel_size
-        self.weight = Parameter(self.in_channels*k_h*k_W, self.out_channels)
+        k_h, k_w = self.kernel_size
+        self.weight = Parameter(self.in_channels*k_h*k_w, self.out_channels)
         self.bias = Parameter(self.out_channels)
 
     def forward(self, input : Tensor)-> Tensor:

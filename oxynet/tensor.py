@@ -2,7 +2,6 @@ from __future__ import annotations
 from typing import List, NamedTuple, Callable, Optional, Union, Tuple
 
 import numpy as np 
-# import oxynet.tensor_ops as ops
 import oxynet.ops as ops
 
 class Dependency(NamedTuple):
