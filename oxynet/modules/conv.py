@@ -54,13 +54,8 @@ class Conv2d(Module):
 class Flatten(Module):
     def __init__(self) -> None:
         super().__init__()
-
     
-    def forward(self, input: Tensor):
-        b = input.shape[0]
-        out_shape = 1
-        for i in range(1,len(input.shape)):
-            out_shape *= input.shape[i]
-
-        return input.reshape((b, out_shape))
+    def forward(self, input: Tensor)-> Tensor:
+        N = input.shape[0]
+        return input.reshape(N, -1)
 

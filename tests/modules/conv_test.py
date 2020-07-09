@@ -33,14 +33,20 @@ class TestConv2d(TestCase):
         assert input.grad.shape == (3,3,8,9)
 
 
-# class TestFlatten(TestCase):
-#     def test_sample_flatten(self):
-#         input = Tensor(np.random.randn(3,8,9,3), requires_grad= True)
+class TestFlatten(TestCase):
+    def test_sample_flatten(self):
+        input_data = np.random.randn(7,3,11,11)
+        input = Tensor(input_data, requires_grad= True)
         
-#         conv = Conv2d(3, 10,3)
-#         flat = Flatten()
+        conv = Conv2d(3, 10,(3,3))
+        flat = Flatten()
 
-#         output = conv(input)
-#         output = flat(output)
+        output1 = conv(input)
+        output2 = flat(output1)
+        assert output1.shape == (7,10,9,9)
+        assert output2.shape == (7, 810)
 
-#         assert output.shape == (3, 420)
+        output2.backward(Tensor(output2.data))
+
+        assert output1.grad.shape == (7,10,9,9)
+        assert input.grad.shape == (7,3,11,11)
