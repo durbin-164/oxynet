@@ -4,29 +4,28 @@ import oxynet as onet
 import numpy as np
 from .utils import handle_array_broadcasting
 
-def tensor_sum(t: onet.Tensor) -> onet.Tensor:
+def sum(t: onet.Tensor, axis = None, keepdims = False) -> onet.Tensor:
     """
     Takes a tensor and returns the 0-tensor
     that's the sum of all its elements.
     """
 
-    data = t.data.sum()
+    data = t.data.sum(axis=axis, keepdims = keepdims)
     requires_grad = t.requires_grad
-
+    depends_on = []
     if requires_grad:
         def grad_fn(grad: np.ndarray) -> np.ndarray:
             """
             grad is necessarily a 0-tensor, so each
             input element contributes that much
             """
+            # We need to keep the information on which axis the sum was made (to be broadcasting compatible)
+            # We always reshape the gradient in the same axis for back-propagation
+            data_keepdims = t.data.sum(axis=axis, keepdims=True)
+            return grad.reshape(data_keepdims.shape) + np.zeros_like(t.data)
 
-            return grad * np.ones_like(t.data)
-        
         depends_on = [onet.Dependency(t, grad_fn)]
     
-    else:
-        depends_on = []
-
     return onet.Tensor(data,
                  requires_grad,
                  depends_on)
@@ -177,6 +176,121 @@ def slice(t:onet.Tensor, idxs) -> onet.Tensor:
     return onet.Tensor(data,
                   requires_grad,
                   depends_on)
+
+
+def multiply(t1: onet.Tensor, t2: onet.Tensor) -> onet.Tensor:
+    r"""Elementwise multiplication of two tensors-like object.
+
+    .. math::
+
+        T_{out} = T_1 \times T_2
+
+    Args:
+        t1 (Tensor like): tensor to multiply
+        t2 (Tensor like): second tensor to multiply with
+
+    Returns:
+        Tensor
+    """
+    data = np.multiply(t1.data, t2.data)
+    requires_grad = t1.requires_grad or t2.requires_grad
+    depends_on = []
+
+    if t1.requires_grad:
+        def grad_fn1(grad):
+            r"""Update the gradient from t1 for the the multiplication operation, :math:`grad = grad \times T_2`.
+
+            Shape:
+                - inputs (np.ndarray): upstream gradient with shape the same shape as inputs data :math:`T_1`.
+                - outputs (np.ndarray): downstream gradient with shape the same shape as inputs data :math:`T_1`.
+            """
+            grad = grad * t2.data
+            # Sum out added dims
+            ndims_added = grad.ndim - t1.data.ndim
+            for _ in range(ndims_added):
+                grad = grad.sum(axis=0)
+            # Sum across broadcasted (but non-added dims)
+            for i, dim in enumerate(t1.shape):
+                if dim == 1:
+                    grad = grad.sum(axis=i, keepdims=True)
+            return grad
+
+        depends_on.append(onet.Dependency(t1, grad_fn1))
+
+    if t2.requires_grad:
+        def grad_fn2(grad):
+            r"""Update the gradient from t2 for the the multiplication operation, :math:`grad = grad \times T_1`.
+
+            Shape:
+                - inputs (np.ndarray): upstream gradient with shape the same shape as inputs data :math:`T_2`.
+                - outputs (np.ndarray): downstream gradient with shape the same shape as inputs data :math:`T_2`.
+            """
+            grad = grad * t1.data
+            # Sum out added dims
+            ndims_added = grad.ndim - t2.data.ndim
+            for _ in range(ndims_added):
+                grad = grad.sum(axis=0)
+            # Sum across broadcasted (but non-added dims)
+            for i, dim in enumerate(t2.shape):
+                if dim == 1:
+                    grad = grad.sum(axis=i, keepdims=True)
+            return grad
+
+        depends_on.append(onet.Dependency(t2, grad_fn2))
+
+    return onet.Tensor(data, requires_grad, depends_on)
+
+
+def inverse(t:onet.Tensor) -> onet.Tensor:
+    r"""Inverse a tensor-like object.
+
+    .. math::
+
+        T_{out} = \frac{1}{T}
+
+    Args:
+        t (Tensor like): tensor to inverse.
+
+    Returns:
+        Tensor
+    """
+    data = 1.0/t.data
+    requires_grad = t.requires_grad
+    depends_on = []
+
+    if requires_grad:
+        def grad_fn(grad):
+            r"""Update the gradient for the inverse operation, :math:`grad = grad \times \frac{-1}{T^2}`.
+
+            Shape:
+                - inputs (np.ndarray): upstream gradient.
+                - outputs (np.ndarray): downstream gradient.
+            """
+            return - 1. / (t.data ** 2) * grad
+
+        depends_on = [onet.Dependency(t, grad_fn)]
+
+    return onet.Tensor(data,
+                       requires_grad,
+                       depends_on)
+
+
+def div(t1: onet.Tensor, t2: onet.Tensor)-> onet.Tensor:
+    r"""Divide two tensor-like object.
+
+    .. math::
+
+        T_{out} = T_1 \times \frac{1}{T_2}
+
+    Args:
+        t1 (Tensor like): tensor to multiply
+        t2 (Tensor like): tensor to invert
+
+    Returns:
+        Tensor
+    """
+    return multiply(t1, inverse(t2))
+
 
 
 def pow(t: onet.Tensor, to_power:int) -> onet.Tensor:
