@@ -1,4 +1,4 @@
 from .tensor import Tensor, Dependency
 
 #maths
-from oxynet.maths import exp
+from oxynet.maths import exp, log, max
