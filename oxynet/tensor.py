@@ -111,7 +111,16 @@ class Tensor:
     def __ipow__(self, to_power:int) -> "Tensor":
         self.data = self.data ** to_power
         return self
-        
+    
+    def __truediv__(self, other):
+        return ops.div(self, other)
+
+    def __rtruediv__(self, other):
+        return ops.div(other, self)
+
+    def __itruediv__(self, other):
+        self.data = self.data / ensure_tensor(other).data
+        return self
 
     def backward(self, grad: 'Tensor' = None) ->None:
         assert self.requires_grad, "called backward on non-requires-grad tensor" 
@@ -128,8 +137,8 @@ class Tensor:
             backward_grad = dependency.grad_fn(grad.data)
             dependency.tensor.backward(Tensor(backward_grad)) 
 
-    def sum(self) -> 'Tensor':
-        return ops.tensor_sum(self)
+    def sum(self, axis = None, keepdims = False) -> 'Tensor':
+        return ops.sum(self)
 
     
     def reshape(self, *shape:Tuple) -> "Tensor":
