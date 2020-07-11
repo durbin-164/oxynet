@@ -1,5 +1,23 @@
 import numpy as np 
 from oxynet.tensor import Tensor, Dependency 
+import oxynet as onet 
+from oxynet.modules import Module
+
+class Softmax(Module):
+    '''
+    stablesoftmax
+    '''
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, input: Tensor, axis: int = -1)->Tensor:
+        max_vals = onet.max(input, axis=axis, keepdims=True)
+        # avoid overflow/underflow issue
+        exp_vals = onet.exp(input - max_vals)
+        sum_vals = exp_vals.sum( axis=axis, keepdims=True)
+        return exp_vals / sum_vals
+
+
 
 def tanh(tensor: Tensor) -> Tensor:
     data = np.tanh(tensor.data)
@@ -17,3 +35,4 @@ def tanh(tensor: Tensor) -> Tensor:
     return Tensor(data, 
               requires_grad,
               depends_on)
+
