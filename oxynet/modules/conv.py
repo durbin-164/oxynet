@@ -3,6 +3,7 @@ from oxynet import Tensor
 from oxynet.modules import Module , Parameter
 import numpy as np
 from .higher_dimention_ops import img2col, get_conv_output_shape
+from oxynet.maths import he_initialization
 
 class Conv2d(Module):
     def __init__(self, 
@@ -27,8 +28,10 @@ class Conv2d(Module):
 
     def initialize_weights(self)-> None:
         k_h, k_w = self.kernel_size
-        self.weight = Parameter(self.in_channels*k_h*k_w, self.out_channels)
-        self.bias = Parameter(self.out_channels)
+        weight_data = he_initialization(self.in_channels*k_h*k_w, self.out_channels)
+        
+        self.weight = Parameter(data=weight_data)
+        self.bias = Parameter(data=np.zeros((self.out_channels)))
 
     def forward(self, input : Tensor)-> Tensor:
         
