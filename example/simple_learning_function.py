@@ -2,9 +2,8 @@ import parent_package
 import numpy as np 
 
 from oxynet import Tensor
-from oxynet.layer import Parameter
-from oxynet.model import Module
-from oxynet.optim import SGD
+from oxynet.modules import Module, Parameter
+from oxynet.optims import SGD
 
 
 x_data = Tensor(np.random.randn(100, 3))

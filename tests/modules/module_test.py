@@ -1,6 +1,5 @@
 import unittest 
-from oxynet.model import Module 
-from oxynet.layer import Parameter
+from oxynet.modules import Module , Parameter
 
 class TestModule(unittest.TestCase):
     def test_simple_module(self):

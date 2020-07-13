@@ -5,9 +5,8 @@ import numpy as np
 import inspect
 
 from oxynet import Tensor
-from oxynet.layer import Parameter,tanh
-from oxynet.optim import SGD
-from oxynet.model import Module
+from oxynet.modules import Parameter,tanh, Module
+from oxynet.optims import SGD
 
 class FizzBuzzModel(Module):
     def __init__(self, num_hidden: int = 50) -> None:

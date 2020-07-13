@@ -1,4 +1,4 @@
-from oxynet.layer import Parameter
+from oxynet.modules import Parameter
 import unittest
 
 class TestParameter(unittest.TestCase):
@@ -8,3 +8,5 @@ class TestParameter(unittest.TestCase):
         assert p.shape == (3,4)
 
         assert type(repr(p)) == str
+
+        assert p.requires_grad == True
