@@ -2,7 +2,7 @@ name: Python build
 
 on:
   push:
-    branches: [master, dev]
+    branches: [master, dev, dev-cpu]
   pull_request:
     branches: ['**' ]
 
