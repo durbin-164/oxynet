@@ -1,4 +1,4 @@
-import numpy as np 
+import cupy as cp 
 from oxynet.tensor import Tensor, Dependency 
 import oxynet as onet 
 from oxynet.modules import Module
@@ -20,11 +20,11 @@ class Softmax(Module):
 
 
 def tanh(tensor: Tensor) -> Tensor:
-    data = np.tanh(tensor.data)
+    data = cp.tanh(tensor.data)
     requires_grad = tensor.requires_grad
 
     if requires_grad:
-        def grad_fn(grad: np.ndarray) -> np.ndarray:
+        def grad_fn(grad: cp.ndarray) -> cp.ndarray:
             return grad * (1 - data * data)
 
         depends_on = [Dependency(tensor, grad_fn)]

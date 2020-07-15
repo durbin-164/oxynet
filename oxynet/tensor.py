@@ -1,23 +1,23 @@
 from __future__ import annotations
 from typing import List, NamedTuple, Callable, Optional, Union, Tuple
 
-import numpy as np 
+import cupy as cp 
 import oxynet.ops as ops
 
 class Dependency(NamedTuple):
     tensor: 'Tensor'
-    grad_fn: Callable[[np.ndarray], np.ndarray]
+    grad_fn: Callable[[cp.ndarray], cp.ndarray]
 
 
-Arrayable = Union[float, list, np.ndarray]
+Arrayable = Union[float, list, cp.ndarray]
 
-def ensure_array(arrayable: Arrayable) -> np.ndarray:
-    if isinstance(arrayable, np.ndarray):
+def ensure_array(arrayable: Arrayable) -> cp.ndarray:
+    if isinstance(arrayable, cp.ndarray):
         return arrayable
     else:
-        return np.array(arrayable)
+        return cp.array(arrayable)
 
-Tensorable = Union['Tensor', list , np.ndarray]
+Tensorable = Union['Tensor', list , cp.ndarray]
 
 def ensure_tensor(tensorable: Tensorable) -> 'Tensor':
     if isinstance(tensorable, Tensor):
@@ -41,11 +41,11 @@ class Tensor:
             self.zero_grad()
     
     @property
-    def data(self) -> np.ndarray:
+    def data(self) -> cp.ndarray:
         return self._data
     
     @data.setter
-    def data(self, new_data: np.ndarray) -> None:
+    def data(self, new_data: cp.ndarray) -> None:
         self._data = new_data
         # Setting the data manually means we invalidate the gradient.
         # self.grad = None
@@ -55,7 +55,7 @@ class Tensor:
         return self._data.shape
         
     def zero_grad(self) -> None:
-        self.grad = Tensor(np.zeros_like(self.data, dtype=np.float64))
+        self.grad = Tensor(cp.zeros_like(self.data, dtype=cp.float64))
 
     def __repr__(self) -> str:
         return f"Tensor ({self.data}, requires_grad=({self.requires_grad}))"  

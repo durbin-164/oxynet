@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import List, Tuple
 import oxynet as onet
-import numpy as np
+import cupy as cp
 from .utils import handle_array_broadcasting
 
 def sum(t: onet.Tensor, axis = None, keepdims = False) -> onet.Tensor:
@@ -14,7 +14,7 @@ def sum(t: onet.Tensor, axis = None, keepdims = False) -> onet.Tensor:
     requires_grad = t.requires_grad
     depends_on = []
     if requires_grad:
-        def grad_fn(grad: np.ndarray) -> np.ndarray:
+        def grad_fn(grad: cp.ndarray) -> cp.ndarray:
             """
             grad is necessarily a 0-tensor, so each
             input element contributes that much
@@ -22,7 +22,7 @@ def sum(t: onet.Tensor, axis = None, keepdims = False) -> onet.Tensor:
             # We need to keep the information on which axis the sum was made (to be broadcasting compatible)
             # We always reshape the gradient in the same axis for back-propagation
             data_keepdims = t.data.sum(axis=axis, keepdims=True)
-            return grad.reshape(data_keepdims.shape) + np.zeros_like(t.data)
+            return grad.reshape(data_keepdims.shape) + cp.zeros_like(t.data)
 
         depends_on = [onet.Dependency(t, grad_fn)]
     
@@ -48,7 +48,7 @@ def add(t1: onet.Tensor, t2: onet.Tensor) ->onet.Tensor:
     depends_on: List[onet.Dependency] = []
 
     if t1.requires_grad:
-        def grad_fn1(grad: np.ndarray) -> np.ndarray:
+        def grad_fn1(grad: cp.ndarray) -> cp.ndarray:
 
             grad = handle_array_broadcasting(grad, t1.data)
 
@@ -56,7 +56,7 @@ def add(t1: onet.Tensor, t2: onet.Tensor) ->onet.Tensor:
         depends_on.append(onet.Dependency(t1, grad_fn1))
 
     if t2.requires_grad:
-        def grad_fn2(grad: np.ndarray) -> np.ndarray:
+        def grad_fn2(grad: cp.ndarray) -> cp.ndarray:
             grad = handle_array_broadcasting(grad, t2.data)
                     
             return grad
@@ -87,7 +87,7 @@ def mul(t1: onet.Tensor, t2: onet.Tensor) ->onet.Tensor:
     depends_on: List[onet.Dependency] = []
 
     if t1.requires_grad:
-        def grad_fn1(grad: np.ndarray) -> np.ndarray:
+        def grad_fn1(grad: cp.ndarray) -> cp.ndarray:
 
             grad = grad * t2.data
 
@@ -97,7 +97,7 @@ def mul(t1: onet.Tensor, t2: onet.Tensor) ->onet.Tensor:
         depends_on.append(onet.Dependency(t1, grad_fn1))
 
     if t2.requires_grad:
-        def grad_fn2(grad: np.ndarray) -> np.ndarray:
+        def grad_fn2(grad: cp.ndarray) -> cp.ndarray:
 
             grad = grad * t1.data
 
@@ -143,13 +143,13 @@ def matmul(t1: onet.Tensor, t2: onet.Tensor) -> onet.Tensor:
     depends_on: List[onet.Dependency] = []
 
     if t1.requires_grad:
-        def grad_fn1(grad: np.ndarray) -> np.ndarray:
+        def grad_fn1(grad: cp.ndarray) -> cp.ndarray:
             return grad @ t2.data.T
 
         depends_on.append(onet.Dependency(t1, grad_fn1))
 
     if t2.requires_grad:
-        def grad_fn2(grad: np.ndarray) -> np.ndarray:
+        def grad_fn2(grad: cp.ndarray) -> cp.ndarray:
             return t1.data.T @ grad
         depends_on.append(onet.Dependency(t2, grad_fn2))
 
@@ -163,8 +163,8 @@ def slice(t:onet.Tensor, idxs) -> onet.Tensor:
     requires_grad = t.requires_grad
 
     if requires_grad:
-        def grad_fn(grad: np.ndarray) -> np.ndarray:
-            bigger_grad = np.zeros_like(t.data)
+        def grad_fn(grad: cp.ndarray) -> cp.ndarray:
+            bigger_grad = cp.zeros_like(t.data)
             bigger_grad[idxs] = grad
 
             return bigger_grad
@@ -192,7 +192,7 @@ def multiply(t1: onet.Tensor, t2: onet.Tensor) -> onet.Tensor:
     Returns:
         Tensor
     """
-    data = np.multiply(t1.data, t2.data)
+    data = cp.multiply(t1.data, t2.data)
     requires_grad = t1.requires_grad or t2.requires_grad
     depends_on = []
 
@@ -295,13 +295,13 @@ def div(t1: onet.Tensor, t2: onet.Tensor)-> onet.Tensor:
 
 def pow(t: onet.Tensor, to_power:int) -> onet.Tensor:
 
-    data = np.power(t.data, to_power)
+    data = cp.power(t.data, to_power)
     requires_grad = t.requires_grad 
     depends_on = []
 
     if requires_grad:
-        def grad_fn(grad: np.ndarray) -> np.ndarray:
-            return grad * to_power * np.power(t.data, to_power-1) 
+        def grad_fn(grad: cp.ndarray) -> cp.ndarray:
+            return grad * to_power * cp.power(t.data, to_power-1) 
 
         depends_on = [onet.Dependency(t, grad_fn)]
 

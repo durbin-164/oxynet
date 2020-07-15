@@ -1,11 +1,19 @@
+'''
+http://yann.lecun.com/exdb/mnist/
+'''
+
 import parent_package
 import oxynet as onet 
-import numpy as np 
+import cupy as cp 
+import numpy as np
 from oxynet.modules import Module, Conv2d, Linear, Flatten, CrossEntropyLoss
 from oxynet.optims import SGD 
 from oxynet.modules import tanh
 import gzip
 from oxynet import Tensor
+import time 
+
+start_time = time.time()
 
 root_dir = ".datasets/MNIST/"
 
@@ -18,13 +26,13 @@ def _load_mnist( path, header_size):
     path = root_dir + path
     with gzip.open(path, 'rb') as f:
         data = np.frombuffer(f.read(), np.uint8, offset=header_size)
-    return np.asarray(data, dtype=np.uint8)
-
-data_size = 1000*28*28
+    return cp.array(data, dtype=cp.uint8)
+base_size=10000
+data_size = base_size*28*28
 x_train = _load_mnist(train_data, header_size=16)[:data_size,].reshape((-1,1, 28, 28)).astype(float)/255
-x_test = _load_mnist(test_data, header_size=16).reshape((-1, 1,28, 28)).astype(float)/255
-y_train = _load_mnist(train_label, header_size=8)[:1000]
-y_test = _load_mnist(test_label, header_size=8).reshape((-1,1))
+# x_test = _load_mnist(test_data, header_size=16).reshape((-1, 1,28, 28)).astype(float)/255
+y_train = _load_mnist(train_label, header_size=8)[:base_size]
+# y_test = _load_mnist(test_label, header_size=8).reshape((-1,1))
 
 print(y_train.shape)
 def one_hot(Y, num_classes):
@@ -46,13 +54,13 @@ def one_hot(Y, num_classes):
         Tensor: one hot encoded tensor of shape :math:`(N, c)`
     """
     batch_size = len(Y)
-    Y_tilde = np.zeros((batch_size, num_classes))
-    Y_tilde[np.arange(batch_size), Y] = 1
+    Y_tilde = cp.zeros((batch_size, num_classes))
+    Y_tilde[cp.arange(batch_size), Y] = 1
     return Y_tilde
 
 def accuracy(pred, actual):
-    pred_ = np.argmax(pred, axis=-1)
-    actual_ = np.argmax(actual, axis=-1)
+    pred_ = cp.argmax(pred, axis=-1)
+    actual_ = cp.argmax(actual, axis=-1)
     # print(pred.shape)
     # print(actual.shape)
 
@@ -84,16 +92,16 @@ class Model(Module):
 model = Model(1, 10)
 optimizer = SGD(lr=0.0001)
 criterion = CrossEntropyLoss()
-batch_size =64
+batch_size =256
 out_class = 10
 
 
-starts = np.arange(0, x_train.shape[0], batch_size)
+starts = cp.arange(0, x_train.shape[0], batch_size)
 for epoch in range(500):
     epoch_loss = 0.0
     epoch_accuracy = 0.0
 
-    np.random.shuffle(starts)
+    cp.random.shuffle(starts)
     for start in starts:
         end = start + batch_size
 
@@ -119,3 +127,6 @@ for epoch in range(500):
     if(epoch % 10 == 0):
         print("Epoch : ",epoch, "  Loss: ",epoch_loss, " Acc: ", epoch_accuracy)
         
+
+
+print("--- %s minutes ---" % ((time.time() - start_time)/60.0))

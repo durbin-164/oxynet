@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Tuple
 import oxynet as onet
-import numpy as np 
+import cupy as cp 
 
 kernel_size_error_message = 'Kernel size must be a list of shape [kernel_h, kernel_w]'
 
@@ -13,7 +13,7 @@ def img2col(inputs: onet.Tensor, ksize, stride=1, pad = 0):
     depends_on = []
 
     if requires_grad:
-        def grad_fn(grad: np.ndarray) -> np.ndarray:
+        def grad_fn(grad: cp.ndarray) -> cp.ndarray:
             #return grad shape == input shape
             input_shape = inputs.data.shape
             return matrix_to_tensor(grad, input_shape, ksize, stride, pad)
@@ -67,8 +67,8 @@ def tensor_to_matrix(inputs, ksize, stride=1, pad=0):
     
 
     # define tensor and matrix
-    tensor = np.pad(inputs, pad_width=[(0, 0), (0, 0), (pad, pad), (pad, pad)], mode='constant')
-    matrix = np.zeros((N, C, kernel_h, kernel_w, out_h, out_w), dtype=inputs.dtype)
+    tensor = cp.pad(inputs, pad_width=[(0, 0), (0, 0), (pad, pad), (pad, pad)], mode='constant')
+    matrix = cp.zeros((N, C, kernel_h, kernel_w, out_h, out_w), dtype=inputs.dtype)
 
     for y in range(kernel_h):
         y_max = y + out_h * stride
@@ -115,7 +115,7 @@ def matrix_to_tensor(inputs, desire_shape ,ksize, stride=1, pad=0):
 
     # here, we difine a matrix with shape [nums, out_height, out_width, in_channel, kernel_height, kernel_width]
     matrix = inputs.reshape(N, out_h, out_w, C, kernel_h, kernel_w).transpose(0, 3, 4, 5, 1, 2)
-    tensor = np.zeros((N, C, H + pad*2 + stride - 1, W + pad*2 + stride - 1), dtype=inputs.dtype)
+    tensor = cp.zeros((N, C, H + pad*2 + stride - 1, W + pad*2 + stride - 1), dtype=inputs.dtype)
 
     for y in range(kernel_h):
         y_max = y + out_h * stride

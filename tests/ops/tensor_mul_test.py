@@ -1,5 +1,5 @@
 import unittest
-import numpy as np 
+import cupy as cp 
 
 
 from oxynet.tensor import Tensor
@@ -20,7 +20,7 @@ class TestTensorMul(unittest.TestCase):
 
         t1 *= 0.1
         # assert t1.grad is None
-        np.testing.assert_array_almost_equal(t1.data, [.1, .2, .3])
+        cp.testing.assert_array_almost_equal(t1.data, [.1, .2, .3])
 
     
     def test_broadcast_mul(self):
