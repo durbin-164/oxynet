@@ -36,7 +36,7 @@ def log(t:Tensor)-> Tensor:
 
 
 def max(t: Tensor, axis = None, keepdims = False)->Tensor:
-    data = cp.max(t.data, axis, keepdims=keepdims)
+    data = cp.max(t.data, axis=axis, keepdims=keepdims)
 
     requires_grad = t.requires_grad
     depends_on = []
