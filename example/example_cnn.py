@@ -6,6 +6,8 @@ from oxynet.optims import SGD
 from oxynet.modules import tanh
 import gzip
 from oxynet import Tensor
+import time 
+start_time = time.time()
 
 root_dir = ".datasets/MNIST/"
 
@@ -20,10 +22,10 @@ def _load_mnist( path, header_size):
         data = np.frombuffer(f.read(), np.uint8, offset=header_size)
     return np.asarray(data, dtype=np.uint8)
 
-data_size = 1000*28*28
+data_size = 10000*28*28
 x_train = _load_mnist(train_data, header_size=16)[:data_size,].reshape((-1,1, 28, 28)).astype(float)/255
 x_test = _load_mnist(test_data, header_size=16).reshape((-1, 1,28, 28)).astype(float)/255
-y_train = _load_mnist(train_label, header_size=8)[:1000]
+y_train = _load_mnist(train_label, header_size=8)[:10000]
 y_test = _load_mnist(test_label, header_size=8).reshape((-1,1))
 
 print(y_train.shape)
@@ -89,7 +91,7 @@ out_class = 10
 
 
 starts = np.arange(0, x_train.shape[0], batch_size)
-for epoch in range(500):
+for epoch in range(100):
     epoch_loss = 0.0
     epoch_accuracy = 0.0
 
@@ -119,3 +121,4 @@ for epoch in range(500):
     if(epoch % 10 == 0):
         print("Epoch : ",epoch, "  Loss: ",epoch_loss, " Acc: ", epoch_accuracy)
         
+print("--- %s minutes ---" % ((time.time() - start_time)/60.0))
