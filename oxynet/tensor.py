@@ -138,7 +138,7 @@ class Tensor:
             dependency.tensor.backward(Tensor(backward_grad)) 
 
     def sum(self, axis = None, keepdims = False) -> 'Tensor':
-        return ops.sum(self)
+        return ops.sum(self,axis=axis, keepdims=keepdims)
 
     
     def reshape(self, *shape:Tuple) -> "Tensor":
