@@ -27,6 +27,8 @@ def _load_mnist( path, header_size):
     with gzip.open(path, 'rb') as f:
         data = np.frombuffer(f.read(), np.uint8, offset=header_size)
     return cp.array(data, dtype=cp.uint8)
+
+
 base_size=10000
 data_size = base_size*28*28
 x_train = _load_mnist(train_data, header_size=16)[:data_size,].reshape((-1,1, 28, 28)).astype(float)/255
@@ -90,14 +92,14 @@ class Model(Module):
         return x5
 
 model = Model(1, 10)
-optimizer = SGD(lr=0.0001)
+optimizer = SGD(lr=0.01)
 criterion = CrossEntropyLoss()
 batch_size =256
-out_class = 10
+out_classes = 10
 
 
 starts = cp.arange(0, x_train.shape[0], batch_size)
-for epoch in range(500):
+for epoch in range(100):
     epoch_loss = 0.0
     epoch_accuracy = 0.0
 
@@ -105,11 +107,12 @@ for epoch in range(500):
     for start in starts:
         end = start + batch_size
 
+        inputs = Tensor(x_train[start:end], requires_grad = True)
+        actual = Tensor(one_hot(y_train[start:end], out_classes), requires_grad = True)
+        
+
         model.zero_grad()
 
-        inputs = Tensor(x_train[start:end], requires_grad = True)
-        actual = Tensor(one_hot(y_train[start:end],out_class), requires_grad = True)
-        
         predicted = model(inputs)
         
         
