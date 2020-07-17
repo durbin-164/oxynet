@@ -7,7 +7,7 @@ Print the numbers 1 to 100, except
 import parent_package
 from typing import List
 
-import numpy as np
+import cupy as cp
 
 from oxynet import Tensor
 from oxynet.modules import Parameter,tanh, Module, Linear
@@ -56,11 +56,11 @@ batch_size = 32
 model = FizzBuzzModel()
 optimizer = SGD( lr=0.001)
 
-starts = np.arange(0, x_train.shape[0], batch_size)
-for epoch in range(500):
+starts = cp.arange(0, x_train.shape[0], batch_size)
+for epoch in range(50):
     epoch_loss = 0.0
 
-    np.random.shuffle(starts)
+    cp.random.shuffle(starts)
     for start in starts:
         end = start + batch_size
 
@@ -84,13 +84,13 @@ num_correct = 0
 for x in range(1, 101):
     inputs = Tensor([binary_encode(x)])
     predicted = model(inputs)[0]
-    predicted_idx = np.argmax(predicted.data)
-    actual_idx = np.argmax(fizz_buzz_encode(x))
+    predicted_idx = cp.argmax(predicted.data)
+    actual_idx = cp.argmax(cp.array(fizz_buzz_encode(x)))
     labels = [str(x), "fizz", "buzz", "fizzbuzz"]
 
     if predicted_idx == actual_idx:
         num_correct += 1
 
-    print(x, labels[predicted_idx], labels[actual_idx], predicted)
+    print(x, labels[cp.asnumpy(predicted_idx)], labels[cp.asnumpy(actual_idx)], predicted)
 
 print(num_correct, "/ 100")

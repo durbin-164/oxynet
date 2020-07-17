@@ -1,13 +1,13 @@
 import parent_package
-import numpy as np 
+import cupy as cp 
 
 from oxynet import Tensor
 from oxynet.modules import Module, Parameter
 from oxynet.optims import SGD
 
 
-x_data = Tensor(np.random.randn(100, 3))
-coef = Tensor(np.array([-1, +3, -2], dtype= np.float))
+x_data = Tensor(cp.random.randn(100, 3))
+coef = Tensor(cp.array([-1, +3, -2], dtype= cp.float))
 
 y_data = x_data @ coef + 5
 
