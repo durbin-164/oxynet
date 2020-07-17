@@ -30,7 +30,7 @@ class Linear(Module):
     def forward(self, input: Tensor) -> Tensor:
         output = input @ self.weight
         if self.is_bias:
-            output += self.bias
+            output = output + self.bias
         
         return output
         
