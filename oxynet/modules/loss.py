@@ -9,8 +9,7 @@ class CrossEntropyLoss(Module):
 
         logits = softmax(pred)
 
-        delta = Tensor(1e-7, requires_grad=True)
-
+        delta = Tensor(1e-15, requires_grad=True)
         cross_entropy = -onet.sum(actual * onet.log(logits + delta))/batch_size
 
         return cross_entropy
