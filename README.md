@@ -53,7 +53,7 @@ Tensor is the main auto differentiable multidimensional variable. It supports al
 2. Flatten
 3. Conv2d
 
-## Model Creation and Training Example
+## Model Creation and Training Example Using <font color="red">oxynet</font>
 
 ```python
 import oxynet as onet 
